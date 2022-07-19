@@ -19,9 +19,17 @@ class PostgresSettings(BaseSettings):
         return f"{self.pg_schema}://{self.pg_user}:{self.pg_password}@{self.pg_host}:{self.pg_port}/{self.pg_db_name}"
 
 
+class AppSettings(BaseSettings):
+    app_name: str
+    docs_url: str
+    openapi_url: str
+    description: str
+    version: str
+
 
 class Settings:
     db = PostgresSettings()
+    app = AppSettings()
 
 
 settings = Settings()

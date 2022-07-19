@@ -1,4 +1,4 @@
-from main import app
+from src.settings import app
 from uvicorn import run
 
 if __name__ == '__main__':
