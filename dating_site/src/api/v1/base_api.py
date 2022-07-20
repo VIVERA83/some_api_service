@@ -5,6 +5,8 @@ from http import HTTPStatus
 
 from src.service.service import Service, get_service
 from src.models.user_model import MODELS
+from src.settings import settings
+from asyncio import wait_for, TimeoutError
 
 
 class BaseAPI:
@@ -12,9 +14,15 @@ class BaseAPI:
 
     async def set_data(self, obj: MODELS):
         try:
-            await self.service.set_data(obj)
+            await wait_for(self.service.set_data(obj), timeout=settings.db.timeout)
         except IntegrityError as e:
             raise HTTPException(status_code=HTTPStatus.BAD_REQUEST, detail=get_error_message(e))
+        except TimeoutError as e:
+            message = "The service is temporarily unavailable, try again later"
+            raise HTTPException(status_code=HTTPStatus.SERVICE_UNAVAILABLE, detail=message)
+        except ConnectionRefusedError:
+            message = "The service is temporarily unavailable, try again later"
+            raise HTTPException(status_code=HTTPStatus.SERVICE_UNAVAILABLE, detail=message)
 
 
 def get_error_message(error: IntegrityError):

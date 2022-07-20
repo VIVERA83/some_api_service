@@ -13,6 +13,7 @@ class PostgresSettings(BaseSettings):
     pg_host: str
     pg_port: int
     pg_db_name: str
+    timeout: int
 
     @property
     def pg_dsn(self):
@@ -28,6 +29,8 @@ class AppSettings(BaseSettings):
 
 
 class Settings:
+    # время, которое ждем ответа от БД
+
     db = PostgresSettings()
     app = AppSettings()
 
