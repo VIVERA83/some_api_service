@@ -6,3 +6,6 @@ uvicorn==0.18.2
 fastapi==0.79.0
 fastapi_utils==0.2.1
 email_validator==1.2.1
+python-multipart==0.0.5
+geocoder~=1.38.1
+icecream~=2.1.2

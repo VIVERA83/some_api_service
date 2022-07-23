@@ -1,10 +1,11 @@
 from fastapi import Depends
+from functools import lru_cache
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.exc import IntegrityError
-from src.models.user_model import MODELS
-from functools import lru_cache
-from src.db.postgres import get_session
+from sqlalchemy.future import select
 
+from src.models.user_model import MODELS
+from src.db.postgres import get_session
 from icecream import ic
 
 
@@ -19,6 +20,13 @@ class Service:
         except IntegrityError as errors:
             await self.session.rollback()
             raise errors
+
+    async def get_data(self, model: MODELS):
+        try:
+            result = await self.session.execute(select(model))
+        except ConnectionRefusedError as e:
+            return ic(e)
+        return result.scalars().all()
 
 
 @lru_cache

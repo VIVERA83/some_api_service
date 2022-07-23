@@ -1,6 +1,5 @@
 from pydantic import BaseModel, EmailStr, UUID4, validator
 from enum import Enum
-import json
 
 
 class Sex(str, Enum):
@@ -10,10 +9,10 @@ class Sex(str, Enum):
 
 class UserModel(BaseModel):
     _id: UUID4 = None
-    avatar: str = "avatar"
-    sex: Sex
+    _avatar: str = None
     first_name: str = None
     last_name: str = None
+    sex: Sex
     email: EmailStr
     password: str
 
