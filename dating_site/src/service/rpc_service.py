@@ -15,7 +15,6 @@ class RPCService:
 
     @classmethod
     async def create(cls) -> "RPCService":
-        print(settings.rpc.rabbit_dsn)
         cls.connection = await aio_pika.connect(settings.rpc.rabbit_dsn)
         cls.channel = await cls.connection.channel()
         cls.client_rpc = await RPC.create(cls.channel, "image_service", )
