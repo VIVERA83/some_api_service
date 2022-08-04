@@ -1,7 +1,7 @@
 from sqlalchemy import Column, Enum, String, BINARY
 from sqlalchemy.dialects.postgresql import UUID
 from uuid import uuid4
-from src.db.postgres import Base
+from src.service.db.postgres import Base
 from typing import Union
 
 

@@ -3,21 +3,21 @@ from pydantic import BaseSettings
 from dotenv import load_dotenv
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__name__)))
-load_dotenv()
+load_dotenv("../.env_local")
 
 
 class PostgresSettings(BaseSettings):
-    pg_schema: str
-    pg_user: str
-    pg_password: str
-    pg_host: str
-    pg_port: int
-    pg_db_name: str
+    postgres_schema: str
+    postgres_user: str
+    postgres_password: str
+    postgres_host: str
+    postgres_port: int
+    postgres_db_name: str
     timeout: int
 
     @property
     def pg_dsn(self):
-        return f"{self.pg_schema}://{self.pg_user}:{self.pg_password}@{self.pg_host}:{self.pg_port}/{self.pg_db_name}"
+        return f"{self.postgres_schema}://{self.postgres_user}:{self.postgres_password}@{self.postgres_host}:{self.postgres_port}/{self.postgres_db_name}"
 
 
 class AppSettings(BaseSettings):
@@ -28,11 +28,17 @@ class AppSettings(BaseSettings):
     version: str
 
 
+class RPCSettings(BaseSettings):
+    rabbit_dsn: str
+
+
 class Settings:
     # время, которое ждем ответа от БД
+    timeout: int
 
     db = PostgresSettings()
     app = AppSettings()
+    rpc = RPCSettings()
 
 
 settings = Settings()

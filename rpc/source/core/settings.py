@@ -1,8 +1,8 @@
 import io
 
-from src.core.config import settings
-from rpc.src.utils.yandex_disk import YandexDisk
-from rpc.src.utils.watermark import add_watermark
+from source.core.config import settings
+from source.utils.yandex_disk import YandexDisk
+from source.utils.utils import add_watermark
 
 ya_disk = YandexDisk(secret=settings.ya.ya_secret, token=settings.ya.ya_token)
 
