@@ -1,6 +1,9 @@
 .env
 .env_local
 xlam
+/rpc/client_2.py
+/rpc/movies.jpg
+/**/*.jpg
 .idea
 # Byte-compiled / optimized / DLL files
 __pycache__/

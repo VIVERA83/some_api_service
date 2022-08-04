@@ -1,11 +1,12 @@
 from fastapi import Depends
 from functools import lru_cache
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.exc import IntegrityError
+from sqlalchemy.exc import IntegrityError, ProgrammingError
+from asyncpg.exceptions import UndefinedTableError
 from sqlalchemy.future import select
 
 from src.models.user_model import MODELS
-from src.db.postgres import get_session
+from src.service.db.postgres import get_session
 from icecream import ic
 
 
@@ -20,6 +21,8 @@ class DBService:
         except IntegrityError as errors:
             await self.session.rollback()
             raise errors
+        except (UndefinedTableError, ProgrammingError) as errors:
+            raise errors
 
     async def get_data(self, model: MODELS):
         try:
@@ -30,5 +33,5 @@ class DBService:
 
 
 @lru_cache
-def get_service(session: AsyncSession = Depends(get_session)) -> DBService:
+def get_db_service(session: AsyncSession = Depends(get_session)) -> DBService:
     return DBService(session)

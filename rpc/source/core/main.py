@@ -2,12 +2,13 @@ import asyncio
 import aio_pika
 from aio_pika.abc import AbstractConnection
 
-from rpc.src.rpc.rpc import RPC
-from rpc.src.core.settings import upload_image, download_image, ya_disk
-from rpc.src.core.config import settings
+from source.rpc.rpc import RPC
+from source.core.settings import upload_image, download_image, ya_disk
+from source.core.config import settings
 
 
 async def init_rpc() -> AbstractConnection:
+    print(settings.rabbit.rabbit_dsn)
     connection = await aio_pika.connect(url=settings.rabbit.rabbit_dsn)
     channel = await connection.channel()
     service = await RPC.create(channel, "image_service", )

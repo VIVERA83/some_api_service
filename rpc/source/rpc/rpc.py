@@ -12,7 +12,7 @@ from inspect import iscoroutinefunction
 from concurrent import futures
 import logging
 
-from rpc.src.rpc.schema import MessageSchema
+from source.rpc.schema import MessageSchema
 
 
 class RPC:

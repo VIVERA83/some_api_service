@@ -18,7 +18,7 @@ if config.config_file_name is not None:
     fileConfig(config.config_file_name)
 
 # Импорт нашего модуля, где происходит инициализация БД
-import src.db.postgres as db
+import src.service.db.postgres as db
 
 target_metadata = db.Base.metadata
 
