@@ -26,7 +26,4 @@ ___
 
     docker-compose up --build
 
-*Предварительно установите [Docker](https://www.docker.com/get-started/)  
-
-
-
+*Предварительно установите [Docker](https://www.docker.com/get-started/)
