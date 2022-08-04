@@ -14,7 +14,11 @@ async def validate_file(file: UploadFile):
     try:
         TypeFile(type_file)
     except ValueError:
-        raise HTTPException(status_code=HTTPStatus.UNSUPPORTED_MEDIA_TYPE,
-                            detail={type_file: "is not a valid file type"})
+        raise HTTPException(
+            status_code=HTTPStatus.UNSUPPORTED_MEDIA_TYPE,
+            detail={type_file: "is not a valid file type"},
+        )
     if len(await file.read()) >= 1048576:
-        raise HTTPException(status_code=HTTPStatus.REQUEST_ENTITY_TOO_LARGE, detail="Too large")
+        raise HTTPException(
+            status_code=HTTPStatus.REQUEST_ENTITY_TOO_LARGE, detail="Too large"
+        )

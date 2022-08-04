@@ -8,9 +8,11 @@ from typing import Union
 class UserOrm(Base):
     __tablename__ = "users"
 
-    id: UUID = Column(UUID(as_uuid=True), primary_key=True, default=uuid4, unique=True, nullable=False)
+    id: UUID = Column(
+        UUID(as_uuid=True), primary_key=True, default=uuid4, unique=True, nullable=False
+    )
     avatar: bytes = Column(BINARY())  # путь к аватарке
-    sex: str = Column(Enum("man", "woman", name="sex"))  # пол
+    sex: bytes = Column(Enum("man", "woman", name="sex"))  # пол
     first_name: str = Column(String())
     last_name: str = Column(String())
     email: str = Column(String(), unique=True, nullable=False)

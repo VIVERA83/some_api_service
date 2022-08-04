@@ -9,7 +9,6 @@ app = FastAPI(
     openapi_url=settings.app.openapi_url,
     description=settings.app.description,
     version=settings.app.version,
-
 )
 
 app.include_router(client_router, prefix="/api/clients")

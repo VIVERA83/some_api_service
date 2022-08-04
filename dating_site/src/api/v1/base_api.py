@@ -3,26 +3,32 @@ from fastapi import Depends, HTTPException
 from sqlalchemy.exc import IntegrityError
 from http import HTTPStatus
 
-from src.service.service import Service, get_service
+from src.service.service import DBService, get_service
 from src.models.user_model import MODELS
 from src.settings import settings
 from asyncio import wait_for, TimeoutError
 
 
 class BaseAPI:
-    service: Optional[Service] = Depends(get_service)
+    service: Optional[DBService] = Depends(get_service)
 
     async def set_data(self, obj: MODELS):
         try:
             await wait_for(self.service.set_data(obj), timeout=settings.db.timeout)
         except IntegrityError as e:
-            raise HTTPException(status_code=HTTPStatus.BAD_REQUEST, detail=get_error_message(e))
+            raise HTTPException(
+                status_code=HTTPStatus.BAD_REQUEST, detail=get_error_message(e)
+            )
         except TimeoutError as e:
             message = "The service is temporarily unavailable, try again later"
-            raise HTTPException(status_code=HTTPStatus.SERVICE_UNAVAILABLE, detail=message)
+            raise HTTPException(
+                status_code=HTTPStatus.SERVICE_UNAVAILABLE, detail=message
+            )
         except ConnectionRefusedError:
             message = "The service is temporarily unavailable, try again later"
-            raise HTTPException(status_code=HTTPStatus.SERVICE_UNAVAILABLE, detail=message)
+            raise HTTPException(
+                status_code=HTTPStatus.SERVICE_UNAVAILABLE, detail=message
+            )
 
     async def get_data(self, obj: MODELS):
         try:
@@ -30,7 +36,9 @@ class BaseAPI:
         except ConnectionRefusedError:
             message = "The service is temporarily unavailable, try again later"
             print("e")
-            raise HTTPException(status_code=HTTPStatus.SERVICE_UNAVAILABLE, detail=message)
+            raise HTTPException(
+                status_code=HTTPStatus.SERVICE_UNAVAILABLE, detail=message
+            )
 
 
 def get_error_message(error: IntegrityError) -> dict[str, str]:

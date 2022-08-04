@@ -9,7 +9,7 @@ class Sex(str, Enum):
 
 class UserModel(BaseModel):
     _id: UUID4 = None
-    _avatar: str = None
+    _avatar: bytes = None
     first_name: str = None
     last_name: str = None
     sex: Sex
