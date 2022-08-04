@@ -48,7 +48,11 @@ class BaseAPI:
 
 def get_error_message(error: IntegrityError) -> dict[str, str]:
     """Разбирает сообщение об ошибке и возвращает словарик с полями которые не являются уникальными"""
-    res = error.args[0].split("DETAIL:")
-    lst = res[1].split('"')[1].split("=")
-    err_msg = {lst[0][1:-1]: f"{lst[1][1:-1]} busy, change the field name"}
+    if isinstance(error, IntegrityError):
+        res = error.args[0].split("DETAIL:")
+        key = res[1].split("=")[0].split(" ")[-1][1:-1]
+        value = res[1].split("=")[1].split(" ")[0][1:-1]
+        err_msg = {key: f"{value} busy, change the field name"}
+    else:
+        err_msg = {"error": str(error)}
     return err_msg
