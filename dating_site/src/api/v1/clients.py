@@ -5,6 +5,7 @@ from src.models.user_model import UserOrm
 from src.api.v1.schema.user_schema import UserModel
 from src.api.v1.base_api import BaseAPI
 from src.api.v1.schema.validate import validate_file
+from uuid import UUID
 from icecream import ic
 
 client_router = InferringRouter()
@@ -19,11 +20,13 @@ class ClientApi(BaseAPI):
         return {"detail": "ok"}
 
     @client_router.post(
-        "/upload_avatar/", description="Загрузить аватар пользователя пользователя"
+        "/upload_avatar/", description="Загрузить аватар пользователя"
     )
-    async def upload_avatar(self, file: UploadFile | None = File()):
+    async def upload_avatar(self, user_id: UUID, file: UploadFile | None = File()):
         await validate_file(file)
-
+        file_name = user_id.hex + "." + file.filename.split(".")[1]
+        ic(file_name)
+        await self.upload_image(fd=await file.read(), file_name=file_name)
         return {"detail": "ok"}
 
     @client_router.get("/list/", description="Посмотреть список пользователей")

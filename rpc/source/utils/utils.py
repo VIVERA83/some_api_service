@@ -46,10 +46,10 @@ def before_execution(sleep_time=2, limit_repeat=50, logging_level=logging.ERROR)
             while limit:
                 try:
                     func(*args, **kwargs)
-                    logging.log(logging_level, "  before_execution, Completed")
+                    logging.log(logging_level, " before_execution, Completed")
                     break
                 except KeyboardInterrupt:
-                    logging.log(logging_level, "  before_execution, Canceled user")
+                    logging.log(logging_level, " before_execution, Canceled user")
                     break
                 except Exception as ex:
                     logging.log(logging_level, f" before_execution, {ex}")

@@ -17,10 +17,10 @@ class RPCService:
     async def create(cls) -> "RPCService":
         cls.connection = await aio_pika.connect(settings.rpc.rabbit_dsn)
         cls.channel = await cls.connection.channel()
-        cls.client_rpc = await RPC.create(cls.channel, "image_service", )
+        cls.client_rpc = await RPC.create(cls.channel, settings.rpc.listen_queue)
         return cls()
 
-    async def call(self, receiver: str, method_name: str, kwargs: dict, expiration: int = None, reply_to: str = None):
+    async def call(self, receiver: str, method_name: str, kwargs: dict, expiration: int = 10, reply_to: str = None):
         return await self.client_rpc.call(receiver, method_name, kwargs, expiration, reply_to)
 
     async def close(self):

@@ -8,10 +8,9 @@ from source.core.config import settings
 
 
 async def init_rpc() -> AbstractConnection:
-    print(settings.rabbit.rabbit_dsn)
     connection = await aio_pika.connect(url=settings.rabbit.rabbit_dsn)
     channel = await connection.channel()
-    service = await RPC.create(channel, "image_service", )
+    service = await RPC.create(channel, settings.rpc.queue_name)
     # регистрация функций которые можно будет вызывать
     await service.register_method("upload_image", upload_image)
     await service.register_method("download_image", download_image)
@@ -21,7 +20,6 @@ async def init_rpc() -> AbstractConnection:
 def run_server():
     loop = asyncio.get_event_loop()
     connection = loop.run_until_complete(init_rpc())
-    print(connection)
     try:
         loop.run_forever()
     except KeyboardInterrupt:

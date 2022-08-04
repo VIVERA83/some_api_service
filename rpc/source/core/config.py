@@ -13,9 +13,14 @@ class YandexDiskSettings(BaseSettings):
     ya_token: str
 
 
+class RPCSettings(BaseSettings):
+    queue_name: str
+
+
 class Settings:
     rabbit = RabbitSettings()
     ya = YandexDiskSettings()
+    rpc = RPCSettings()
 
 
 settings = Settings()

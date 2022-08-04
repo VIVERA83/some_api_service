@@ -29,6 +29,18 @@ services:
       - rabbitmq
       - postgres
 
+  rpc:
+    container_name: rpc
+    build:
+      context: /rpc
+      dockerfile: dockerfile_rpc
+    command: [ 'python','run.py' ]
+    env_file:
+      - .env
+    depends_on:
+      - rabbitmq
+    restart: always
+
   nginx:
     container_name: nginx_dating
     build: ./nginx

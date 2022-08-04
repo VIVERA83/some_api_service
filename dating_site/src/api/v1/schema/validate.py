@@ -9,7 +9,13 @@ class TypeFile(str, Enum):
 
 
 async def validate_file(file: UploadFile):
-    # проверка на тип пересылаемого файла
+    """
+    Проверка файла на соответствие требованиям:
+    1. тип файла: jpg, png
+    2. размер файла не более 1 Мб.
+    :param file: объект файл.
+    :return:
+    """
     type_file = file.content_type.split("/")[1]
     try:
         TypeFile(type_file)
