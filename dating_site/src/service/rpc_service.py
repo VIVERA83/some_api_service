@@ -20,8 +20,17 @@ class RPCService:
         cls.client_rpc = await RPC.create(cls.channel, settings.rpc.listen_queue)
         return cls()
 
-    async def call(self, receiver: str, method_name: str, kwargs: dict, expiration: int = 10, reply_to: str = None):
-        return await self.client_rpc.call(receiver, method_name, kwargs, expiration, reply_to)
+    async def call(
+        self,
+        receiver: str,
+        method_name: str,
+        kwargs: dict,
+        expiration: int = 10,
+        reply_to: str = None,
+    ):
+        return await self.client_rpc.call(
+            receiver, method_name, kwargs, expiration, reply_to
+        )
 
     async def close(self):
         await self.connection.close()

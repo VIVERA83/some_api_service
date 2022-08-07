@@ -3,7 +3,7 @@ import aio_pika
 from aio_pika.abc import AbstractConnection
 
 from source.rpc.rpc import RPC
-from source.core.settings import upload_image, download_image, ya_disk
+from source.utils.yandex_disk import ya_disk, upload_image, download_image
 from source.core.config import settings
 
 

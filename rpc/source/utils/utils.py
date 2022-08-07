@@ -1,4 +1,5 @@
 # Pillow - 9.2.0
+import os
 import io
 import logging
 from PIL import Image, ImageDraw, ImageFont  # noqa
@@ -6,10 +7,12 @@ from functools import wraps
 from time import sleep
 
 TYPE = {"JPEG": "jpg", "PNG": "png"}
+# путь к файлу со шрифтами, по умолчанию берется шрифт из папки в которой находится функция
+PATH_FONT = os.path.split(os.path.abspath(__file__))[0] + r"\Kabaret.ttf"
 
 
 def add_watermark(
-        fd: bytes, text: str, font: str = "Kabaret.ttf", font_size: int = 36
+    fd: bytes, text: str, font: str = None, font_size: int = None
 ) -> bytes:
     """
     Принимает картинку в виде byte и добавляет в нее водяные знаки в виде теста,
@@ -20,8 +23,9 @@ def add_watermark(
     :param font_size: размер шрифта.
     :return: видоизмененная картинка типа bytes
     """
+    font = font or PATH_FONT
+    font_size = font_size or 36
     image = Image.open(io.BytesIO(fd))
-    print("Image")
     draw = ImageDraw.Draw(image)
     font = ImageFont.truetype(font, font_size)
     draw.text((50, 50), text, font=font, align="center", fill=int("8b00ff", 16))
@@ -39,6 +43,7 @@ def before_execution(sleep_time=2, limit_repeat=50, logging_level=logging.ERROR)
     :param logging_level: Уровень для сообщения
     :return:
     """
+
     def func_wrapper(func):
         @wraps(func)
         def inner(*args, **kwargs):
@@ -54,8 +59,11 @@ def before_execution(sleep_time=2, limit_repeat=50, logging_level=logging.ERROR)
                     break
                 except Exception as ex:
                     logging.log(logging_level, f" before_execution, {ex}")
-                logging.log(logging_level, f" before_execution, We continue to try to run, remained "
-                                           f"{limit} try")
+                logging.log(
+                    logging_level,
+                    f" before_execution, We continue to try to run, remained "
+                    f"{limit} try",
+                )
                 limit -= 1
                 sleep(sec)
 

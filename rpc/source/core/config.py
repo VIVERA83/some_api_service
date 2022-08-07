@@ -1,6 +1,9 @@
+import os
 from pydantic import BaseSettings
 from dotenv import load_dotenv
+
 # "/../.env_local"
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__name__)))
 load_dotenv(".env_local")
 
 

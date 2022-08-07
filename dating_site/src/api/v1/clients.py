@@ -1,3 +1,4 @@
+import asyncio
 import io
 
 from fastapi_utils.inferring_router import InferringRouter
@@ -22,20 +23,29 @@ class ClientApi(BaseAPI):
         await self.set_data(UserOrm(**user.dict()))
         return {"detail": "ok"}
 
-    @client_router.post(
-        "/upload_avatar/", description="Загрузить аватар пользователя"
-    )
-    async def upload_avatar(self, request: Request, user_id: UUID, file: UploadFile | None = File()):
-        ic(request.headers.get("content-length"))
+    @client_router.post("/upload_avatar/", description="Загрузить аватар пользователя")
+    async def upload_avatar(
+        self, request: Request, user_id: UUID, file: UploadFile | None = File()
+    ):
         await validate_file(file, request)
         file_name = user_id.hex + "." + file.filename.split(".")[1]
-        with open(file_name, "wb") as f:
-            f.write(await file.read())
+        # with open(file_name, "wb") as f:
+        #     f.write(await file.read())
 
         # ic(await file.read())
         # ic(file.filename, file_name)
-        # await self.upload_image(fd=await file.read(), file_name=file_name)
-        return {"detail": "ok"}
+        ic("base_api")
+        try:
+            result = await asyncio.wait_for(
+                self.upload_image(
+                    fd=await file.read(),
+                    file_name=file_name,
+                ),
+                timeout=4,
+            )
+        except asyncio.TimeoutError:
+            result = " TimeoutError"
+        return {"detail": result}
 
     @client_router.get("/list/", description="Посмотреть список пользователей")
     async def list(self):
