@@ -18,6 +18,7 @@ class YandexDisk:
         :param file_name: Имя файла, под которым будет хранится файл в Yandex Disk.
         :return:
         """
+
         await self.disk.upload(fd, "dating_images/" + file_name)
 
     async def download(self, path: str) -> bytes:

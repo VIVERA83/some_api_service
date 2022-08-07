@@ -21,6 +21,7 @@ def add_watermark(
     :return: видоизмененная картинка типа bytes
     """
     image = Image.open(io.BytesIO(fd))
+    print("Image")
     draw = ImageDraw.Draw(image)
     font = ImageFont.truetype(font, font_size)
     draw.text((50, 50), text, font=font, align="center", fill=int("8b00ff", 16))

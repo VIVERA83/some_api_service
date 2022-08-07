@@ -1,3 +1,5 @@
+import io
+
 from fastapi_utils.inferring_router import InferringRouter
 from fastapi_utils.cbv import cbv
 from fastapi import File, UploadFile, Request
@@ -8,6 +10,7 @@ from src.api.v1.schema.validate import validate_file
 from uuid import UUID
 from icecream import ic
 
+ic.includeContext = True
 client_router = InferringRouter()
 
 
@@ -22,11 +25,16 @@ class ClientApi(BaseAPI):
     @client_router.post(
         "/upload_avatar/", description="Загрузить аватар пользователя"
     )
-    async def upload_avatar(self, user_id: UUID, file: UploadFile | None = File()):
-        await validate_file(file)
+    async def upload_avatar(self, request: Request, user_id: UUID, file: UploadFile | None = File()):
+        ic(request.headers.get("content-length"))
+        await validate_file(file, request)
         file_name = user_id.hex + "." + file.filename.split(".")[1]
-        ic(file_name)
-        await self.upload_image(fd=await file.read(), file_name=file_name)
+        with open(file_name, "wb") as f:
+            f.write(await file.read())
+
+        # ic(await file.read())
+        # ic(file.filename, file_name)
+        # await self.upload_image(fd=await file.read(), file_name=file_name)
         return {"detail": "ok"}
 
     @client_router.get("/list/", description="Посмотреть список пользователей")

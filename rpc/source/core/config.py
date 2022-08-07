@@ -1,7 +1,7 @@
 from pydantic import BaseSettings
 from dotenv import load_dotenv
-
-load_dotenv()
+# "/../.env_local"
+load_dotenv(".env_local")
 
 
 class RabbitSettings(BaseSettings):
