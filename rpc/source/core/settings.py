@@ -4,6 +4,10 @@ from source.core.config import settings
 from source.utils.yandex_disk import YandexDisk
 from source.utils.utils import add_watermark
 
+from icecream import ic
+
+ic.includeContext = True
+
 ya_disk = YandexDisk(secret=settings.ya.ya_secret, token=settings.ya.ya_token)
 
 
@@ -17,7 +21,13 @@ async def upload_image(fd: bytes, file_name: str, text: str, font: str = "Kabare
     :param font_size: Размер шрифта
     :return:
     """
-    file = io.BytesIO(add_watermark(fd, text, font, font_size))
+
+    ic(type(fd))
+    fd = io.BytesIO(fd)
+    fd.name = file_name
+
+    file = io.BytesIO(add_watermark(fd.read(), text, font, font_size))
+
     return await ya_disk.upload(file, file_name)
 
 

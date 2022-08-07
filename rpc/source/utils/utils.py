@@ -21,6 +21,7 @@ def add_watermark(
     :return: видоизмененная картинка типа bytes
     """
     image = Image.open(io.BytesIO(fd))
+    print("Image")
     draw = ImageDraw.Draw(image)
     font = ImageFont.truetype(font, font_size)
     draw.text((50, 50), text, font=font, align="center", fill=int("8b00ff", 16))
@@ -46,10 +47,10 @@ def before_execution(sleep_time=2, limit_repeat=50, logging_level=logging.ERROR)
             while limit:
                 try:
                     func(*args, **kwargs)
-                    logging.log(logging_level, "  before_execution, Completed")
+                    logging.log(logging_level, " before_execution, Completed")
                     break
                 except KeyboardInterrupt:
-                    logging.log(logging_level, "  before_execution, Canceled user")
+                    logging.log(logging_level, " before_execution, Canceled user")
                     break
                 except Exception as ex:
                     logging.log(logging_level, f" before_execution, {ex}")

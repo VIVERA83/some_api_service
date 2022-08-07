@@ -1,3 +1,4 @@
+import io
 from typing import Optional
 from fastapi import Depends, HTTPException
 from sqlalchemy.exc import IntegrityError
@@ -37,13 +38,22 @@ class BaseAPI:
             await wait_for(self.db_service.get_data(obj), timeout=settings.db.timeout)
         except ConnectionRefusedError:
             message = "The service is temporarily unavailable, try again later"
-            print("e")
             raise HTTPException(
                 status_code=HTTPStatus.SERVICE_UNAVAILABLE, detail=message
             )
 
-    async def call(self, receiver: str, method_name: str, kwargs: dict, expiration: int = None, reply_to: str = None):
-        return await self.rpc_service.call(receiver, method_name, kwargs, expiration, reply_to)
+    async def upload_image(self, fd: bytes, file_name: str):
+        """
+        Загрузка изображения в Yandex Disk, предварительно на изображение наносится текст
+        :param fd: Изображение, в виде байтового объекта.
+        :param file_name: Имя файла.
+        :return:
+        """
+        return await self.rpc_service.call(receiver=settings.rpc.receiver_queue,
+                                           method_name="upload_image",
+                                           kwargs={"fd": fd,
+                                                   "file_name": file_name,
+                                                   "text": "Проруха судьба"})
 
 
 def get_error_message(error: IntegrityError) -> dict[str, str]:

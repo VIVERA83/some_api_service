@@ -1,7 +1,7 @@
 from pydantic import BaseSettings
 from dotenv import load_dotenv
-
-load_dotenv()
+# "/../.env_local"
+load_dotenv(".env_local")
 
 
 class RabbitSettings(BaseSettings):
@@ -13,9 +13,14 @@ class YandexDiskSettings(BaseSettings):
     ya_token: str
 
 
+class RPCSettings(BaseSettings):
+    queue_name: str
+
+
 class Settings:
     rabbit = RabbitSettings()
     ya = YandexDiskSettings()
+    rpc = RPCSettings()
 
 
 settings = Settings()

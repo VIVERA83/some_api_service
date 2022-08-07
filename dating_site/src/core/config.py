@@ -31,6 +31,10 @@ class AppSettings(BaseSettings):
 
 class RPCSettings(BaseSettings):
     rabbit_dsn: str
+    listen_queue: str
+    receiver_queue: str
+    image_service: str
+    geo_service: str
 
 
 class Settings:
