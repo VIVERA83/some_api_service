@@ -24,25 +24,12 @@ class ClientApi(BaseAPI):
         return {"detail": "ok"}
 
     @client_router.post("/upload_avatar/", description="Загрузить аватар пользователя")
-    async def upload_avatar(
-        self, request: Request, user_id: UUID, file: UploadFile | None = File()
-    ):
+    async def upload_avatar(self, request: Request, user_id: UUID, file: UploadFile | None = File()):
         await validate_file(file, request)
         file_name = user_id.hex + "." + file.filename.split(".")[1]
-        # with open(file_name, "wb") as f:
-        #     f.write(await file.read())
-
-        # ic(await file.read())
-        # ic(file.filename, file_name)
-        ic("base_api")
         try:
-            result = await asyncio.wait_for(
-                self.upload_image(
-                    fd=await file.read(),
-                    file_name=file_name,
-                ),
-                timeout=4,
-            )
+            result = await asyncio.wait_for(self.upload_image(fd=await file.read(), file_name=file_name, ),
+                                            timeout=10, )
         except asyncio.TimeoutError:
             result = " TimeoutError"
         return {"detail": result}

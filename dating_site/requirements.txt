@@ -10,3 +10,4 @@ python-multipart==0.0.5
 geocoder~=1.38.1
 aio_pika==8.1.0
 icecream==2.1.2
+alembic==1.8.1
