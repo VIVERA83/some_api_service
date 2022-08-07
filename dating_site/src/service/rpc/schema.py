@@ -19,3 +19,14 @@ class MessageSchema:
     kwargs: dict = None
     # Таймаут, на случай если время на выполнение запроса ограничено
     timeout: int = None
+
+    @property
+    def get_dict(self):
+        return {
+            "id": self.id,
+            "method_name": self.method_name,
+            "reply_to": self.reply_to,
+            "receiver": self.receiver,
+            "kwargs": self.kwargs,
+            "timeout": self.timeout,
+        }

@@ -100,7 +100,7 @@ class RPC:
 
         await response_queue_flag.wait()
         await self.channel.default_exchange.publish(
-            message=self.create_message(self.msg, self.msg.id),
+            message=self.create_message(self.msg.get_dict, self.msg.id),
             routing_key=self.msg.receiver,
         )
         await self.flag.wait()
@@ -116,7 +116,7 @@ class RPC:
         :return:
         """
         async with message.process():
-            body: MessageSchema = pickle.loads(message.body)
+            body: MessageSchema = MessageSchema(**pickle.loads(message.body))
             if not body.kwargs:
                 body.kwargs = {}
             if func := self.methods.get(body.method_name.lower()):
@@ -181,4 +181,4 @@ class RPC:
             logging.error(
                 f"RPC.on_message: error during execution of the called object '{func.__name__}': : {str(e)}"
             )
-            return e
+            return Exception(str(e))

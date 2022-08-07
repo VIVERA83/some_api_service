@@ -11,7 +11,6 @@ import pickle
 from inspect import iscoroutinefunction
 from concurrent import futures
 import logging
-from icecream import ic
 from .schema import MessageSchema
 
 
@@ -78,7 +77,6 @@ class RPC:
         """
 
         async def callback(message: IncomingMessage):
-            ic(self.msg.id)
             async with message.process():
                 if message.correlation_id == self.msg.id:
                     self.response_message = pickle.loads(message.body)
@@ -101,10 +99,9 @@ class RPC:
 
         await response_queue_flag.wait()
         await self.channel.default_exchange.publish(
-            message=self.create_message(self.msg, self.msg.id),
+            message=self.create_message(self.msg.get_dict, self.msg.id),
             routing_key=self.msg.receiver,
         )
-        ic(self.flag.is_set())
         await self.flag.wait()
         return self.response_message
 
@@ -118,7 +115,7 @@ class RPC:
         :return:
         """
         async with message.process():
-            body: MessageSchema = pickle.loads(message.body)
+            body: MessageSchema = MessageSchema(**pickle.loads(message.body))
             if not body.kwargs:
                 body.kwargs = {}
             if func := self.methods.get(body.method_name.lower()):

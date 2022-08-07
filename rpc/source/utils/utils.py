@@ -8,7 +8,7 @@ from time import sleep
 
 TYPE = {"JPEG": "jpg", "PNG": "png"}
 # путь к файлу со шрифтами, по умолчанию берется шрифт из папки в которой находится функция
-PATH_FONT = os.path.split(os.path.abspath(__file__))[0] + r"\Kabaret.ttf"
+PATH_FONT = os.path.join(os.path.split(os.path.abspath(__file__))[0], "Kabaret.ttf")
 
 
 def add_watermark(
@@ -23,6 +23,7 @@ def add_watermark(
     :param font_size: размер шрифта.
     :return: видоизмененная картинка типа bytes
     """
+
     font = font or PATH_FONT
     font_size = font_size or 36
     image = Image.open(io.BytesIO(fd))
