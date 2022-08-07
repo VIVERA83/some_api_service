@@ -49,11 +49,12 @@ class BaseAPI:
         :param file_name: Имя файла.
         :return:
         """
-        return await self.rpc_service.call(receiver=settings.rpc.receiver_queue,
-                                           method_name="upload_image",
-                                           kwargs={"fd": fd,
-                                                   "file_name": file_name,
-                                                   "text": "Проруха судьба"})
+        print("upload_image", file_name)
+        return await self.rpc_service.call(
+            receiver=settings.rpc.receiver_queue,
+            method_name="upload_image",
+            kwargs={"fd": fd, "file_name": file_name, "text": "Проруха судьба"},
+        )
 
 
 def get_error_message(error: IntegrityError) -> dict[str, str]:

@@ -11,7 +11,6 @@ import pickle
 from inspect import iscoroutinefunction
 from concurrent import futures
 import logging
-
 from .schema import MessageSchema
 
 
@@ -57,12 +56,12 @@ class RPC:
         logging.info(f"RPC.register_method: {method_name}")
 
     async def call(
-            self,
-            receiver: str,
-            method_name: str,
-            kwargs: Optional[dict] = None,
-            expiration: Optional[int] = None,
-            reply_to: str = None,
+        self,
+        receiver: str,
+        method_name: str,
+        kwargs: Optional[dict] = None,
+        expiration: Optional[int] = None,
+        reply_to: str = None,
     ) -> Message:
         """
         Метод, вызывает удаленный метод с названием method_name (вызываемый метод предварительно должен быть
@@ -100,7 +99,7 @@ class RPC:
 
         await response_queue_flag.wait()
         await self.channel.default_exchange.publish(
-            message=self.create_message(self.msg, self.msg.id),
+            message=self.create_message(self.msg.get_dict, self.msg.id),
             routing_key=self.msg.receiver,
         )
         await self.flag.wait()
@@ -116,7 +115,7 @@ class RPC:
         :return:
         """
         async with message.process():
-            body: MessageSchema = pickle.loads(message.body)
+            body: MessageSchema = MessageSchema(**pickle.loads(message.body))
             if not body.kwargs:
                 body.kwargs = {}
             if func := self.methods.get(body.method_name.lower()):
@@ -182,4 +181,3 @@ class RPC:
                 f"RPC.on_message: error during execution of the called object '{func.__name__}': : {str(e)}"
             )
             return e
-
