@@ -13,13 +13,13 @@ class YandexDisk:
         self.disk = YaDisk(secret=secret, token=token)
 
     async def upload(
-        self,
-        fd: bytes,
-        file_name: str,
-        text: str,
-        font: str = None,
-        font_size: int = None,
-    ):
+            self,
+            fd: bytes,
+            file_name: str,
+            text: str,
+            font: str = None,
+            font_size: int = None,
+    ) -> str:
         """
         Принимает изображение переданное в bytes, наносит текст (text) на картинку, далее изображение сохраняется на
         YandexDisk.
@@ -28,11 +28,11 @@ class YandexDisk:
         :param text: Надпись на изображение.
         :param font: Путь к файлу с шрифтами.
         :param font_size: Размер шрифта.
-        :return:
+        :return: Ссылка на загрузку файла из облако.
         """
-        print(font)
         file = io.BytesIO(add_watermark(fd, text, font, font_size))
         await self.disk.upload(file, "dating_images/" + file_name)
+        return await self.disk.get_download_link("dating_images/" + file_name)
 
     async def download(self, path: str) -> bytes:
         """
@@ -53,8 +53,8 @@ ya_disk = YandexDisk(secret=settings.ya.ya_secret, token=settings.ya.ya_token)
 
 
 async def upload_image(
-    fd: bytes, file_name: str, text: str, font: str = None, font_size: int = None
-):
+        fd: bytes, file_name: str, text: str, font: str = None, font_size: int = None
+) -> str:
     """
     Загрузить изображение в yandex, предварительно нанести надпись на изображение
     :param fd: Изображение в виде bytes.
@@ -62,7 +62,7 @@ async def upload_image(
     :param text: Надпись, которую будем наносить на изображение
     :param font: Шрифт
     :param font_size: Размер шрифта
-    :return:
+    :return: Ссылка на загрузку файла из облако.
     """
     return await ya_disk.upload(fd, file_name, text, font, font_size)
 

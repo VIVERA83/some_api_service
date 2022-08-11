@@ -27,7 +27,6 @@ from src.core.config import settings
 
 config.set_main_option("sqlalchemy.url", settings.db.pg_dsn)
 
-
 def run_migrations_offline() -> None:
     """Run migrations in 'offline' mode.
 
