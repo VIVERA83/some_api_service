@@ -1,7 +1,7 @@
 import io
 from typing import Optional
 from fastapi import Depends, HTTPException
-from sqlalchemy.exc import IntegrityError
+from sqlalchemy.exc import IntegrityError, ProgrammingError
 from http import HTTPStatus
 
 from src.service.db_service import DBService, get_db_service
@@ -22,12 +22,8 @@ class BaseAPI:
             raise HTTPException(
                 status_code=HTTPStatus.BAD_REQUEST, detail=get_error_message(e)
             )
-        except TimeoutError as e:
-            message = "The service is temporarily unavailable, try again later"
-            raise HTTPException(
-                status_code=HTTPStatus.SERVICE_UNAVAILABLE, detail=message
-            )
-        except ConnectionRefusedError:
+        except (ConnectionRefusedError, TimeoutError):
+            # добавить логирование ошибок
             message = "The service is temporarily unavailable, try again later"
             raise HTTPException(
                 status_code=HTTPStatus.SERVICE_UNAVAILABLE, detail=message
@@ -36,7 +32,8 @@ class BaseAPI:
     async def get_data(self, obj: MODELS):
         try:
             await wait_for(self.db_service.get_data(obj), timeout=settings.db.timeout)
-        except ConnectionRefusedError:
+        except (ConnectionRefusedError, ProgrammingError):
+            # добавить логирование ошибок
             message = "The service is temporarily unavailable, try again later"
             raise HTTPException(
                 status_code=HTTPStatus.SERVICE_UNAVAILABLE, detail=message
