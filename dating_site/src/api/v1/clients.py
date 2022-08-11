@@ -7,6 +7,7 @@ from src.models.user_model import UserOrm, Avatar
 from src.api.v1.schema.user_schema import UserModel
 from src.api.v1.base_api import BaseAPI
 from src.api.v1.schema.validate import validate_file
+from .utils import create_new_filename
 from uuid import UUID
 from icecream import ic
 
@@ -25,10 +26,12 @@ class ClientApi(BaseAPI):
     @client_router.post("/upload_avatar/", description="Загрузить аватар пользователя")
     async def upload_avatar(self, request: Request, user_id: UUID, file: UploadFile | None = File()):
         await validate_file(file, request)
-        file_name = user_id.hex + "." + file.filename.split(".")[1]
         result = "OK"
         try:
-            link = await asyncio.wait_for(self.upload_image(fd=await file.read(), file_name=file_name), timeout=10)
+            link = await asyncio.wait_for(
+                self.upload_image(fd=await file.read(),
+                                  file_name=create_new_filename(user_id.hex, file.filename)),
+                timeout=10)
             await self.set_data(Avatar(id=user_id, avatar=link))
         except asyncio.TimeoutError:
             result = "TimeoutError"
@@ -36,6 +39,4 @@ class ClientApi(BaseAPI):
 
     @client_router.get("/list/", description="Посмотреть список пользователей")
     async def list(self):
-        if users := await self.db_service.get_data(UserOrm):
-            pass
-        return {"detail": users}
+        return {"detail": await self.get_data(UserOrm)}
