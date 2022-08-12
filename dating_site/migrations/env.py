@@ -1,3 +1,5 @@
+import os
+import sys
 import asyncio
 from logging.config import fileConfig
 
@@ -7,25 +9,17 @@ from sqlalchemy.engine import Connection
 from sqlalchemy.ext.asyncio import AsyncEngine
 
 from alembic import context
+import src.models.user_model as db
+from src.core.config import settings
 
-# this is the Alembic Config object, which provides
-# access to the values within the .ini file in use.
 config = context.config
+config.set_main_option("sqlalchemy.url", settings.db.pg_dsn)
 
-# Interpret the config file for Python logging.
-# This line sets up loggers basically.
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)
 
-# Импорт нашего модуля, где происходит инициализация БД
-import src.service.db.postgres as db
-
 target_metadata = db.Base.metadata
 
-# Здесь мы кидаем dsn ссылку
-from src.core.config import settings
-
-config.set_main_option("sqlalchemy.url", settings.db.pg_dsn)
 
 def run_migrations_offline() -> None:
     """Run migrations in 'offline' mode.

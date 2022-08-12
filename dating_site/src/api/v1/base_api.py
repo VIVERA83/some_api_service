@@ -6,9 +6,10 @@ from http import HTTPStatus
 
 from src.service.db_service import DBService, get_db_service
 from src.service.rpc_service import RPCService, get_rpc_service
-from src.models.user_model import MODELS
+from src.models.user_model import MODELS, User, Avatar
 from src.settings import settings
 from asyncio import wait_for, TimeoutError
+from sqlalchemy.future import select
 
 
 class BaseAPI:
@@ -18,6 +19,7 @@ class BaseAPI:
     async def set_data(self, obj: MODELS):
         try:
             await wait_for(self.db_service.set_data(obj), timeout=settings.db.timeout)
+            await self.db_service.session.commit()
         except IntegrityError as e:
             raise HTTPException(
                 status_code=HTTPStatus.BAD_REQUEST, detail=get_error_message(e)
@@ -31,13 +33,17 @@ class BaseAPI:
 
     async def get_data(self, obj: MODELS):
         try:
-            await wait_for(self.db_service.get_data(obj), timeout=settings.db.timeout)
+            return await wait_for(self.db_service.get_data(obj), timeout=settings.db.timeout)
         except (ConnectionRefusedError, ProgrammingError):
             # добавить логирование ошибок
             message = "The service is temporarily unavailable, try again later"
             raise HTTPException(
                 status_code=HTTPStatus.SERVICE_UNAVAILABLE, detail=message
             )
+
+    async def get_full_user_data(self) -> list[User]:
+        result = await self.db_service.session.execute(select(User))
+        return result.unique().all()
 
     async def upload_image(self, fd: bytes, file_name: str):
         """

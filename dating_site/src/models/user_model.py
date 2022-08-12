@@ -1,12 +1,12 @@
 from sqlalchemy import Column, Enum, String, BINARY, ForeignKey
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship, backref
 from sqlalchemy.dialects.postgresql import UUID
 from uuid import uuid4
-from src.service.db.postgres import Base
 from typing import Union
+from src.service.db.postgres import Base
 
 
-class UserOrm(Base):
+class User(Base):
     __tablename__ = "users"
 
     id: UUID = Column(
@@ -18,7 +18,7 @@ class UserOrm(Base):
     email = Column(String(), unique=True, nullable=False)
     password = Column(String(), nullable=False)
 
-    avatars = relationship("Avatar")
+    avatars = relationship("Avatar", lazy="joined", cascade="all,delete", uselist=True)
 
 
 class Avatar(Base):
@@ -29,4 +29,4 @@ class Avatar(Base):
     user_id = Column(UUID(as_uuid=True), ForeignKey("users.id"))
 
 
-MODELS = Union[UserOrm]
+MODELS = Union[User]
