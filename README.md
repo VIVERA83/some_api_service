@@ -23,8 +23,8 @@ ___
 ### ЗАПУСК
 
 #### Docker:
-   Шаг 1: установите [Docker](https://www.docker.com/get-started/), есть еще не установлен.
 
+   Шаг 1: установите [Docker](https://www.docker.com/get-started/), если еще не установлен.
    Шаг 2: скачайте [репозиторий](https://github.com/VIVERA83/some_api_service.git)  
    Шаг 3: запустите:
 
@@ -34,4 +34,3 @@ ___
    далее```alembic upgrade head```, создадим таблицы в Postgres
 
 
-*Предварительно установите [Docker](https://www.docker.com/get-started/)
